@@ -1,7 +1,6 @@
 import { useFormik } from 'formik';
 import * as yup from 'yup'
 import Link from 'next/link'
-
 import {
   Container,
   Box,
@@ -20,6 +19,7 @@ import { firebase } from './../config/firebase'
 const validationSchema = yup.object().shape({
   email: yup.string().email('E-mail inválido').required('Preenchimento obrigatório'),
   password: yup.string().required('Preenchimento obrigatório'),
+  username: yup.string().required('Preenchimento obrigatório'),
 })
 
 export default function Home() {
@@ -34,7 +34,8 @@ export default function Home() {
   } = useFormik({
     onSubmit: async (values, form) => {
       try {
-        const user = await firebase.auth().signInWithEmailAndPassword(values.email, values.password)
+
+        const user = await firebase.auth().createUserWithEmailAndPassword(values.email, values.password)
         console.log(user)
       } catch (error) {
         console.log('Error:', error)
@@ -83,6 +84,23 @@ export default function Home() {
             </FormHelperText>
           }        </FormControl>
 
+        <FormControl id='username' p={4} isRequired>
+          <InputGroup size='lg'>
+            <InputLeftAddon children='clocker.io/' />
+            <Input
+              type='username'
+              value={values.username}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+          </InputGroup>
+          {touched.username &&
+            <FormHelperText textColor='#e74c3c'>
+              {errors.username}
+            </FormHelperText>
+          }
+        </FormControl>
+
         <Box p={4}>
           <Button
             colorScheme='blue'
@@ -95,8 +113,8 @@ export default function Home() {
         </Box>
       </Box>
 
-      <Link href='/signup'>
-        Ainda não tem uma conta? Cadastre-se!
+      <Link href='/'>
+        Já tem uma conta? Acesse!
         </Link>
     </Container>
   )
