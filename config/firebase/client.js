@@ -1,4 +1,4 @@
-import fb from 'firebase/app'
+import firebase from 'firebase/app'
 import 'firebase/auth'
 
 const firebaseConfig = {
@@ -11,6 +11,9 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_MEASUREMENT_ID,
 };
 
-export const firebase = fb.apps.length
-  ? fb.app()
-  : fb.initializeApp(firebaseConfig)
+
+export const firebaseClient = firebase.apps.length
+  ? firebase.app()
+  : firebase.initializeApp(firebaseConfig)
+
+export const persistenceMode = firebase.auth.Auth.Persistence.LOCAL
