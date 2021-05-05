@@ -1,4 +1,4 @@
-import fb from 'firebase/app'
+import firebase from 'firebase/app'
 import 'firebase/auth'
 
 const firebaseConfig = {
@@ -12,8 +12,8 @@ const firebaseConfig = {
 };
 
 
-export const firebase = fb.apps.length
-  ? fb.app()
-  : fb.initializeApp(firebaseConfig)
+export const firebaseClient = firebase.apps.length
+  ? firebase.app()
+  : firebase.initializeApp(firebaseConfig)
 
-export const persistenceMode = fb.auth.Auth.Persistence.LOCAL
+export const persistenceMode = firebase.auth.Auth.Persistence.LOCAL
