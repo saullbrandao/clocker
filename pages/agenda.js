@@ -11,6 +11,7 @@ export default function Agenda() {
     !auth.user && router.push('/')
   }, [auth.user])
 
+
   return (
     <div>
       <Button onClick={logout}>Sair</Button>
