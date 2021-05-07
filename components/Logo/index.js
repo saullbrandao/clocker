@@ -1,7 +1,7 @@
-export const Logo = () => {
+export const Logo = ({ size }) => {
   return (
 
-    <img src='logo.svg' />
+    <img src='logo.svg' width={size} />
 
   )
 }
