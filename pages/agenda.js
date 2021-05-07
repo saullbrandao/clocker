@@ -10,16 +10,20 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"
 import { useAuth } from "../components/Auth"
 import { Logo } from '../components/Logo'
 import { formatDate } from "../components/Date"
+import { getToken } from "../config/firebase/client"
 
-const getAgenda = (when) => {
-  // console.log(when)
-  axios.get('/api/agenda', {
+const getAgenda = async (when) => {
+  const token = await getToken()
+
+  return axios({
+    method: 'get',
+    url: '/api/agenda',
     params: {
-      when
+      date: when
     },
-    // headers: {
-    //   Authorization: `Bearer ${token}`
-    // }
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
   })
 }
 
