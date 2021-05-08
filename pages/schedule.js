@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
-import { useRouter } from "next/router"
 import { useFetch } from "@refetty/react"
 import { addDays, subDays, format } from "date-fns"
 import axios from "axios"
+
 
 import { Container, Box, Button, IconButton, SimpleGrid, Spinner } from "@chakra-ui/react"
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"
@@ -10,6 +10,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"
 import { useAuth } from "../components/Auth"
 import { Logo } from '../components/Logo'
 import { formatDate } from "../components/Date"
+import { TimeBlock } from '../components/TimeBlock'
 
 const getSchedule = async (when) => {
   return axios({
@@ -35,23 +36,15 @@ const Header = ({ children }) => {
   )
 }
 
-const TimeBlock = ({ time }) => {
-  return (
-    <Button p={8} bg='blue.500' color='white'>
-      {time}
-    </Button>
-  )
-
-}
-
 export default function Schedule() {
-  const router = useRouter()
-  const [auth, { logout }] = useAuth()
+  const [, { logout }] = useAuth()
   const [when, setWhen] = useState(() => new Date())
-  const [data, { loading, status, error }, fetch] = useFetch(getSchedule, { lazy: true })
+  const [data, { loading }, fetch] = useFetch(getSchedule, { lazy: true })
 
   const addDay = () => setWhen(prevState => addDays(prevState, 1))
   const subDay = () => setWhen(prevState => subDays(prevState, 1))
+
+
 
   useEffect(() => {
     fetch(when)
