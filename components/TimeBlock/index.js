@@ -24,7 +24,7 @@ const setSchedule = async data => axios({
 })
 
 
-const TimeBlockModal = ({ isOpen, onClose, onComplete, children }) => {
+const TimeBlockModal = ({ isOpen, onClose, onComplete, isSubmitting, children }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} >
       <ModalOverlay />
@@ -36,8 +36,8 @@ const TimeBlockModal = ({ isOpen, onClose, onComplete, children }) => {
         </ModalBody>
 
         <ModalFooter>
-          <Button variant='ghost' onClick={onClose}>Cancelar</Button>
-          <Button colorScheme='blue' mr={3} onClick={onComplete} >
+          {isSubmitting || <Button variant='ghost' onClick={onClose}>Cancelar</Button>}
+          <Button colorScheme='blue' mr={3} onClick={onComplete} isLoading={isSubmitting} >
             Reservar horário
           </Button>
         </ModalFooter>
@@ -51,8 +51,16 @@ export const TimeBlock = ({ time }) => {
 
   const toggle = () => setIsOpen(prevState => !prevState)
 
-  const { values, handleSubmit, handleChange, errors, touched, handleBlur } = useFormik({
-    onSubmit: (values) => setSchedule({ ...values, when: time }),
+  const { values, handleSubmit, handleChange, errors, touched, handleBlur, isSubmitting } = useFormik({
+    onSubmit: async (values) => {
+      try {
+        await setSchedule({ ...values, when: time })
+        toggle()
+      }
+      catch (error) {
+        console.log(error)
+      }
+    },
     initialValues: {
       name: '',
       phone: '',
@@ -69,8 +77,8 @@ export const TimeBlock = ({ time }) => {
       <TimeBlockModal
         isOpen={isOpen}
         onClose={toggle}
-        values={values}
         onComplete={handleSubmit}
+        isSubmitting={isSubmitting}
       >
         <>
           <Input
@@ -83,6 +91,7 @@ export const TimeBlock = ({ time }) => {
             value={values.name}
             onChange={handleChange}
             onBlur={handleBlur}
+            disabled={isSubmitting}
           />
           <Input
             label='Telefone'
@@ -94,6 +103,7 @@ export const TimeBlock = ({ time }) => {
             value={values.phone}
             onChange={handleChange}
             onBlur={handleBlur}
+            disabled={isSubmitting}
             mt={4}
           />
         </>
