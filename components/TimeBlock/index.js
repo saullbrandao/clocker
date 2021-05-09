@@ -48,7 +48,7 @@ const TimeBlockModal = ({ isOpen, onClose, onComplete, isSubmitting, children })
   )
 }
 
-export const TimeBlock = ({ time, date }) => {
+export const TimeBlock = ({ time, date, disabled }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const toggle = () => setIsOpen(prevState => !prevState)
@@ -74,7 +74,7 @@ export const TimeBlock = ({ time, date }) => {
   })
 
   return (
-    <Button p={8} bg='blue.500' color='white' onClick={toggle}>
+    <Button p={8} bg='blue.500' color='white' onClick={toggle} disabled={disabled}>
       {time}
       <TimeBlockModal
         isOpen={isOpen}
