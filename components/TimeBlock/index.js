@@ -98,6 +98,7 @@ export const TimeBlock = ({ time, date, disabled }) => {
           <Input
             label='Telefone'
             placeholder='(99) 9 9999-9999'
+            mask={['(99) 9999-9999', '(99) 9 9999-9999']}
             touched={touched.phone}
             size='lg'
             name='phone'
