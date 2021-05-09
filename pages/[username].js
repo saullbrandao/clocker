@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useFetch } from "@refetty/react"
 import { addDays, subDays, format } from "date-fns"
+import { useRouter } from 'next/router'
 import axios from "axios"
 
 
@@ -12,13 +13,13 @@ import { Logo } from '../components/Logo'
 import { formatDate } from "../components/Date"
 import { TimeBlock } from '../components/TimeBlock'
 
-const getSchedule = async (when) => {
+const getSchedule = async ({ when, username }) => {
   return axios({
     method: 'get',
     url: '/api/schedule',
     params: {
       date: format(when, 'yyyy-MM-dd'),
-      username: window.location.pathname.replace('/', ''),
+      username,
     }
   })
 }
@@ -37,6 +38,7 @@ const Header = ({ children }) => {
 }
 
 export default function Schedule() {
+  const router = useRouter()
   const [, { logout }] = useAuth()
   const [when, setWhen] = useState(() => new Date())
   const [data, { loading }, fetch] = useFetch(getSchedule, { lazy: true })
@@ -47,8 +49,8 @@ export default function Schedule() {
 
 
   useEffect(() => {
-    fetch(when)
-  }, [when])
+    fetch({ when, username: router.query.username })
+  }, [when, router.query.username])
 
 
   return (
