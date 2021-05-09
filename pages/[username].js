@@ -5,10 +5,9 @@ import { useRouter } from 'next/router'
 import axios from "axios"
 
 
-import { Container, Box, Button, IconButton, SimpleGrid, Spinner } from "@chakra-ui/react"
+import { Container, Box, IconButton, SimpleGrid, Spinner } from "@chakra-ui/react"
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"
 
-import { useAuth } from "../components/Auth"
 import { Logo } from '../components/Logo'
 import { formatDate } from "../components/Date"
 import { TimeBlock } from '../components/TimeBlock'
@@ -39,17 +38,16 @@ const Header = ({ children }) => {
 
 export default function Schedule() {
   const router = useRouter()
-  const [, { logout }] = useAuth()
   const [when, setWhen] = useState(() => new Date())
   const [data, { loading }, fetch] = useFetch(getSchedule, { lazy: true })
 
   const addDay = () => setWhen(prevState => addDays(prevState, 1))
   const subDay = () => setWhen(prevState => subDays(prevState, 1))
 
-
+  const refresh = () => fetch({ when, username: router.query.username })
 
   useEffect(() => {
-    fetch({ when, username: router.query.username })
+    refresh()
   }, [when, router.query.username])
 
 
@@ -57,7 +55,6 @@ export default function Schedule() {
     <Container>
       <Header>
         <Logo size={150} />
-        <Button onClick={logout}>Sair</Button>
       </Header>
 
       <Box mt={8} display='flex' alignItems='center'>
@@ -75,7 +72,7 @@ export default function Schedule() {
           size='xl'
         />}
 
-        {data?.map(({ time, isBlocked }) => <TimeBlock key={time} time={time} date={when} disabled={isBlocked} />)}
+        {data?.map(({ time, isBlocked }) => <TimeBlock key={time} time={time} date={when} disabled={isBlocked} onSuccess={refresh} />)}
       </SimpleGrid>
 
     </Container>
