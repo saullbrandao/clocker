@@ -5,12 +5,13 @@ import { useRouter } from 'next/router'
 import axios from "axios"
 
 
-import { Container, Box, IconButton, SimpleGrid, Spinner } from "@chakra-ui/react"
+import { Container, Box, IconButton, SimpleGrid, Spinner, Button } from "@chakra-ui/react"
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"
 
 import { Logo } from '../components/Logo'
 import { formatDate } from "../components/Date"
 import { TimeBlock } from '../components/TimeBlock'
+import { useAuth } from "../components/Auth"
 
 const getSchedule = async ({ when, username }) => {
   return axios({
@@ -38,6 +39,7 @@ const Header = ({ children }) => {
 
 export default function Schedule() {
   const router = useRouter()
+  const [auth, { logout }] = useAuth()
   const [when, setWhen] = useState(() => new Date())
   const [data, { loading }, fetch] = useFetch(getSchedule, { lazy: true })
 
@@ -45,6 +47,10 @@ export default function Schedule() {
   const subDay = () => setWhen(prevState => subDays(prevState, 1))
 
   const refresh = () => fetch({ when, username: router.query.username })
+
+  useEffect(() => {
+    !auth.user && router.push('/')
+  }, [auth.user])
 
   useEffect(() => {
     refresh()
@@ -55,6 +61,10 @@ export default function Schedule() {
     <Container>
       <Header>
         <Logo size={150} />
+        <Box>
+          <Button onClick={() => router.push('/agenda')} mr={4}>Agenda</Button>
+          <Button onClick={logout}>Sair</Button>
+        </Box>
       </Header>
 
       <Box mt={8} display='flex' alignItems='center'>
