@@ -15,7 +15,7 @@ import { getToken } from "../config/firebase/client"
 const getAgenda = async (when) => {
   const token = await getToken()
 
-  return axios({
+  return await axios({
     method: 'get',
     url: '/api/agenda',
     params: {
@@ -30,13 +30,14 @@ const getAgenda = async (when) => {
 const getUsername = async () => {
   const token = await getToken()
 
-  return axios({
+  return await axios({
     method: 'get',
     url: '/api/profile',
     headers: {
       Authorization: `Bearer ${token}`
     }
   })
+
 }
 
 const Header = ({ children }) => {
@@ -76,7 +77,7 @@ export default function Agenda() {
   const [auth, { logout }] = useAuth()
   const [when, setWhen] = useState(() => new Date())
   const [data, { loading }, fetch] = useFetch(getAgenda, { lazy: true })
-  const [user, { loadingUser }, fetchUser] = useFetch(getUsername, { lazy: true })
+  const [user, { loading: loadingUser }, fetchUser] = useFetch(getUsername, { lazy: true })
 
   const addDay = () => setWhen(prevState => addDays(prevState, 1))
   const subDay = () => setWhen(prevState => subDays(prevState, 1))
@@ -86,12 +87,13 @@ export default function Agenda() {
   }, [auth.user])
 
   useEffect(() => {
+    fetchUser()
+  }, [])
+
+  useEffect(() => {
     fetch(when)
   }, [when])
 
-  useEffect(() => {
-    fetchUser()
-  }, [])
 
   return (
     <Container>

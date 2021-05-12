@@ -5,27 +5,40 @@ const profile = db.collection('profiles')
 
 const getProfile = async (req, res) => {
   const [, token] = req.headers.authorization.split(' ')
-  const { user_id } = await firebaseServer.auth().verifyIdToken(token)
 
-  const snapshot = await profile
-    .where('userId', '==', user_id)
-    .get()
+  try {
 
-  const docs = snapshot.docs[0].data()
+    const { user_id } = await firebaseServer.auth().verifyIdToken(token)
 
-  res.status(200).json(docs)
+    const snapshot = await profile
+      .where('userId', '==', user_id)
+      .get()
+
+    const docs = snapshot.docs[0].data()
+
+    return res.status(200).json(docs)
+  } catch (error) {
+    console.log('FB ERROR:', error)
+    res.status(401).end()
+  }
 }
 
 const setProfile = async (req, res) => {
   const [, token] = req.headers.authorization.split(' ')
-  const { user_id } = await firebaseServer.auth().verifyIdToken(token)
 
-  profile.doc(req.body.username).set({
-    username: req.body.username,
-    userId: user_id,
-  })
+  try {
 
-  res.status(200)
+    const { user_id } = await firebaseServer.auth().verifyIdToken(token)
+
+    profile.doc(req.body.username).set({
+      username: req.body.username,
+      userId: user_id,
+    })
+
+    res.status(200).end()
+  } catch (error) {
+    res.status(401).end()
+  }
 }
 
 const methods = {
