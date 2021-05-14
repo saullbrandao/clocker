@@ -27,19 +27,6 @@ const getAgenda = async (when) => {
   })
 }
 
-const getUsername = async () => {
-  const token = await getToken()
-
-  return await axios({
-    method: 'get',
-    url: '/api/profile',
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-
-}
-
 const Header = ({ children }) => {
   return (
     <Box
@@ -77,7 +64,6 @@ export default function Agenda() {
   const [auth, { logout }] = useAuth()
   const [when, setWhen] = useState(() => new Date())
   const [data, { loading }, fetch] = useFetch(getAgenda, { lazy: true })
-  const [user, { loading: loadingUser }, fetchUser] = useFetch(getUsername, { lazy: true })
 
   const addDay = () => setWhen(prevState => addDays(prevState, 1))
   const subDay = () => setWhen(prevState => subDays(prevState, 1))
@@ -85,10 +71,6 @@ export default function Agenda() {
   useEffect(() => {
     !auth.user && router.push('/')
   }, [auth.user])
-
-  useEffect(() => {
-    fetchUser()
-  }, [])
 
   useEffect(() => {
     fetch(when)
@@ -100,7 +82,6 @@ export default function Agenda() {
       <Header>
         <Logo size={150} />
         <Box>
-          {user && <Button onClick={() => router.push(`${user?.username}`)} mr={4}>{user?.username}</Button>}
           <Button onClick={logout}>Sair</Button>
         </Box>
       </Header>

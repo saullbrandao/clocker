@@ -67,7 +67,7 @@ const getSchedule = async (req, res) => {
     return res.status(200).json(result)
   } catch (error) {
     console.log('FB ERROR:', error)
-    return res.status(401).end()
+    return res.status(401)
   }
 }
 
@@ -78,4 +78,4 @@ const methods = {
 
 export default async (req, res) => methods[req.method]
   ? methods[req.method](req, res)
-  : res.status(405).end()
+  : res.status(405)
